@@ -38,7 +38,7 @@ void Tetris(player &p){
         }
         
         if(Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.03 ;
-
+        if(Keyboard::isKeyPressed(Keyboard::RShift)) delay = 1000 ;
         if(p.get_move()) p.check_move(p.get_move()) ;
         if(p.get_rotate()) p.check_rotate() ;
     

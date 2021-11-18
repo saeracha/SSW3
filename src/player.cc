@@ -103,4 +103,7 @@ void player::line_clear(){
     } 
 }
 
-void player::generate_new_Block(){ Cur_Block = Block() ; }
+void player::generate_new_Block(){ 
+    Cur_Block = Next_Block ; 
+    Next_Block = Block() ;    
+}

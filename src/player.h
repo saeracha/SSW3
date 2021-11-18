@@ -22,6 +22,7 @@ class player {
 		int board[ROW][COL];
         int enemy_board[ROW][COL];
         Block Cur_Block ;
+        Block Next_Block ;
         Block Cur_Enemy_Block;
 
 	public:
