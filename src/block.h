@@ -18,6 +18,7 @@ class Block {
     public:
 
         Block() ;
+        Block(int n);
         void operator=(Block right){
             TYPE = right.get_TYPE() ;
             for(int i=0 ; i<4 ; i++){

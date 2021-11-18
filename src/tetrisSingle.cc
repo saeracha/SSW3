@@ -32,11 +32,15 @@ void Tetris(player &p){
                 if(e.key.code == Keyboard::Up) p.set_rotate(true) ;
                 else if(e.key.code == Keyboard::Left) p.set_move(-1) ;
                 else if(e.key.code == Keyboard::Right) p.set_move(1) ;
-                else if(e.key.code == Keyboard::Space) 
-                    p.space_block(delay) ;            
+                else if(e.key.code == Keyboard::Space) p.space_block(delay) ;      
+                else if(e.key.code == Keyboard::LShift ) {
+                    if(!p.get_hold_use()) { 
+                        p.hold_action();
+                        p.set_hold_use(true);    
+                    }
+                }
             }
         }
-        
         if(Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.03 ;
         if(Keyboard::isKeyPressed(Keyboard::RShift)) delay = 1000 ;
         if(p.get_move()) p.check_move(p.get_move()) ;
@@ -47,7 +51,8 @@ void Tetris(player &p){
             else {
                 p.fix_cur_block();
                 p.generate_new_Block() ; 
-                if(cnt < 89 ) cnt++ ; 
+                if(cnt < 89 ) cnt++ ;
+                p.set_hold_use(false);
             }
             timer = 0;
         }
@@ -61,6 +66,8 @@ void Tetris(player &p){
 
         ColoringBoard(scr, block, p);
         ColoringBlock(scr, block, p);
+        ColoringNextBlock(scr, block, p);
+        ColoringHoldBlock(scr, block, p);
 
         scr.draw(frame) ;
         scr.display();
@@ -90,3 +97,29 @@ void ColoringBlock(RenderWindow & scr, Sprite & block, player & p) {
     }
 }
 
+void ColoringNextBlock(RenderWindow & scr, Sprite & block, player & p) {
+    for(size_t j = 0; j<5; j++) {
+        Block b(p.get_next_block(j));
+
+        for(size_t i=0 ; i<4 ; i++){
+            Point Cur_pos = b.get_Cur_pos(i);
+            block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+            block.setPosition((b.get_Cur_pos(i).x+8)*18, b.get_Cur_pos(i).y*18+18*(j*3)) ;
+            block.move(28, 40) ;
+            scr.draw(block) ;      
+        }    
+    }
+}
+
+void ColoringHoldBlock(RenderWindow & scr, Sprite & block, player & p) {
+    if(p.get_hold() == -1) return;
+    Block b(p.get_hold());
+
+    for(size_t i=0 ; i<4 ; i++){
+        Point Cur_pos = b.get_Cur_pos(i);
+        block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+        block.setPosition((b.get_Cur_pos(i).x)*18, b.get_Cur_pos(i).y*18-18) ;
+        block.move(28, 40) ;
+        scr.draw(block) ;      
+    }
+}

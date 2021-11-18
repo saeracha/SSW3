@@ -1,16 +1,10 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #include <algorithm> 
+#include <vector>
 #include "block.h"
 #define ROW	20
 #define COL	10	
-
-/*class Point{
-    public:
-        int x, y;
-};*/
-
-//class Block ;
 
 class player {
 	private:
@@ -19,16 +13,19 @@ class player {
 		bool tetris;
         int move;
         bool rotate;
+        int hold;
+        bool hold_use;
 		int board[ROW][COL];
         int enemy_board[ROW][COL];
+        std::vector <int> next_block;
         Block Cur_Block ;
-        Block Next_Block ;
         Block Cur_Enemy_Block;
 
 	public:
-        player() : score(0), combo(0), tetris(false), move(0), rotate(false) {
+        player() : score(0), combo(0), tetris(false), move(0), rotate(false), hold(-1), hold_use(false) {
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
+            generate_next_block();
             generate_new_Block();
             Cur_Enemy_Block = Block();
         }
@@ -53,6 +50,9 @@ class player {
         Block get_Cur_Block() ;
         Block get_Cur_Enemy_Block();
         int * get_board_address();
+        int get_next_block(int n);
+        int get_hold();
+        bool get_hold_use();
 
 		void set_score(int point);
 		void set_combo(bool success);
@@ -63,6 +63,8 @@ class player {
         void set_move(int move);
         void set_rotate(bool rotate);
         void set_Enemy_Block(Block& block);
+        void set_hold(int n);
+        void set_hold_use(bool use);
 
         void check_move(int move);
         bool check_move_down();
@@ -72,6 +74,8 @@ class player {
         void fix_cur_block();
         void generate_new_Block();
         void line_clear();
+        void generate_next_block();
+        void hold_action();
 };
 
  

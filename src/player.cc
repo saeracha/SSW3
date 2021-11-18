@@ -15,10 +15,21 @@ int player::get_board(int y, int x) {return board[y][x];}
 void player::set_score(int point) {score += point;}
 
 Block player::get_Cur_Block() {return Cur_Block;}
+
 Block player::get_Cur_Enemy_Block() { return Cur_Enemy_Block; }
+
 int * player::get_board_address() {return &board[0][0];}
 
 int player:: get_enemy_board(int y, int x) { return enemy_board[y][x]; }
+
+int player::get_next_block(int cur) { return next_block.at(cur); }
+
+int player::get_hold() {return hold;}
+void player::set_hold(int n) {hold = n;}
+
+bool player::get_hold_use() {return hold_use;}
+void player::set_hold_use(bool use) {hold_use = use;}
+
 void player::set_enemy_board(int y, int x, int value) {
     enemy_board[y][x] = value;
 }
@@ -57,7 +68,6 @@ bool player::check_move_down(){
 
 void player::space_block(float & delay){
     while(1){
-        //Cur_Block.MOVE() ;
         if(Cur_Block.Preoccupied_down(board) || Cur_Block.Out_Bottom()) break ;
         Cur_Block.MOVE();
     }
@@ -104,6 +114,26 @@ void player::line_clear(){
 }
 
 void player::generate_new_Block(){ 
-    Cur_Block = Next_Block ; 
-    Next_Block = Block() ;    
+    Cur_Block = Block(next_block.at(0));
+    next_block.erase(next_block.begin());
+    generate_next_block();   
+}
+
+void player::generate_next_block() {
+    while(next_block.size() < 10) {
+        int n = rand()%7;
+        next_block.push_back(n);
+    }
+}
+
+void player::hold_action() {
+    if(hold == -1) {
+        hold = Cur_Block.get_TYPE()-1;
+        generate_new_Block();
+    }
+    else {
+        int hold_block = hold;
+        hold = Cur_Block.get_TYPE()-1;
+        Cur_Block = Block(hold_block);
+    }
 }

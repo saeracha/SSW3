@@ -1,17 +1,25 @@
 #include "block.h"
 
-Block:: Block(){
-    int block_shape[7][4]={
-        0, 1, 2, 3,
-        2, 5, 6, 7,
-        1, 2, 5, 6,
-        1, 5, 6, 7,
-        3, 5, 6, 7,
-        1, 2, 6, 7,
-        2, 3, 5, 6
-    };
+static int block_shape[7][4]={
+    0, 1, 2, 3,
+    2, 5, 6, 7,
+    1, 2, 5, 6,
+    1, 5, 6, 7,
+    3, 5, 6, 7,
+    1, 2, 6, 7,
+    2, 3, 5, 6
+};
 
+Block:: Block(){
     int n = rand()%7 ;
+    TYPE = n + 1;
+    for(size_t i=0 ; i<4;  i++){
+        Cur_pos[i].x = block_shape[n][i] %4 + 3 ;
+        Cur_pos[i].y = block_shape[n][i] /4 ;
+    }
+}
+
+Block::Block(int n) {
     TYPE = n + 1;
     for(size_t i=0 ; i<4;  i++){
         Cur_pos[i].x = block_shape[n][i] %4 + 3 ;

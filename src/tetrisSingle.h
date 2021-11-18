@@ -10,4 +10,6 @@ using namespace sf;
 void Tetris(player &p) ;
 void ColoringBlock(RenderWindow& scr, Sprite& img, player &);
 void ColoringBoard(RenderWindow& scr, Sprite& img, player &);
+void ColoringNextBlock(RenderWindow& scr, Sprite& img, player &);
+void ColoringHoldBlock(RenderWindow& scr, Sprite& img, player &);
 #endif
