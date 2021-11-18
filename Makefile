@@ -1,18 +1,27 @@
 CC = g++ 
 CFLAGS = -O2 
-TARGET = a.out
-SERVER = server
-OBJS = main.o player.o settings.o block.o client.o
+TARGET = Tetris
+SERVER = Server
+
+SRCDIR = src
+OBJDIR = obj
+
+SOURCES := $(wildcard $(SRCDIR)/*.cc)
+OBJS :=  $(SOURCES:$(SRCDIR)/%.cc=$(OBJDIR)/%.o)
+
 All : $(SERVER) $(TARGET)
 
-$(SERVER) : server.cc
-	$(CC) -o $@ $^ -lpthread -D_REENTRANT
+$(SERVER) : ./src/server/server.cc
+	@$(CC) -o $@ $^ -lpthread -D_REENTRANT
 
 $(TARGET) : $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ -lsfml-graphics -lsfml-window -lsfml-system -lpthread -D_REENTRANT
+	@$(CC) $(CFLAGS) -o $@ $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system -lpthread -D_REENTRANT
+	@echo "Linking complete!"
 
-%.o : %.cc
-	$(CC) $(CFLAGS) -c $<
+$(OBJS) : $(OBJDIR)/%.o : $(SRCDIR)/%.cc
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo ""$<" Compiled!"
 
 clean:
-	rm -f *.o $(TARGET) $(SERVER)
+	@rm -f $(OBJS) $(TARGET) $(SERVER)
+	@echo "Clean up!"
