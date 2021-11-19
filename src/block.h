@@ -4,6 +4,7 @@
 
 #define ROW	20
 #define COL	10	
+#define BLOCK_OFFSET  7
 
 
 class Point{

@@ -104,7 +104,7 @@ void ColoringNextBlock(RenderWindow & scr, Sprite & block, player & p) {
         for(size_t i=0 ; i<4 ; i++){
             Point Cur_pos = b.get_Cur_pos(i);
             block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
-            block.setPosition((b.get_Cur_pos(i).x+8)*18, b.get_Cur_pos(i).y*18+18*(j*3)) ;
+            block.setPosition((b.get_Cur_pos(i).x+8)*18, b.get_Cur_pos(i).y*18+18*(j*3)+90) ;
             block.move(28, 40) ;
             scr.draw(block) ;      
         }    
@@ -115,10 +115,14 @@ void ColoringHoldBlock(RenderWindow & scr, Sprite & block, player & p) {
     if(p.get_hold() == -1) return;
     Block b(p.get_hold());
 
+    int boff = 7, boff_I = 7;
+    if(b.get_TYPE()==1 || b.get_TYPE() == 3) boff += 7;
+    if(b.get_TYPE()==1) boff_I += 10;
+
     for(size_t i=0 ; i<4 ; i++){
         Point Cur_pos = b.get_Cur_pos(i);
         block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
-        block.setPosition((b.get_Cur_pos(i).x)*18, b.get_Cur_pos(i).y*18-18) ;
+        block.setPosition(((b.get_Cur_pos(i).x)+10)*15+boff, b.get_Cur_pos(i).y*15+boff_I) ;
         block.move(28, 40) ;
         scr.draw(block) ;      
     }

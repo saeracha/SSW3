@@ -64,17 +64,16 @@ int main(){
     }
     
     if(cur == MULTI) {
-	sock=socket(PF_INET, SOCK_STREAM, 0);
-	memset(&serv_addr, 0, sizeof(serv_addr));
-	serv_addr.sin_family=AF_INET;
-	serv_addr.sin_addr.s_addr=inet_addr(WELL_KNOWN_IP);
-	serv_addr.sin_port=htons(WELL_KNOWN_PORT);
+	    sock=socket(PF_INET, SOCK_STREAM, 0);
+	    memset(&serv_addr, 0, sizeof(serv_addr));
+	    serv_addr.sin_family=AF_INET;
+	    serv_addr.sin_addr.s_addr=inet_addr(WELL_KNOWN_IP);
+	    serv_addr.sin_port=htons(WELL_KNOWN_PORT);
 
-	if(connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))==-1) {
-        std::cout << "connect failed\n";
-		exit(1);//server is not open;
-    }
-        std::cout << "connect\n";
+	    if(connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))==-1) {
+            std::cout << "CONNECT FAILED!!\n 1)You must open server to play multimode!\n 2)Check WELL_KNOWN_IP and WELL_KNOWN_PORT defined in tetrisMulti.h\n ";
+	    	exit(1);//server is not open;
+        }
         TetrisBattle(sock);    
     }
 

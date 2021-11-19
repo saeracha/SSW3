@@ -14,6 +14,7 @@ static float delay = 0.3 ;
 static float delays[9] = {1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2} ;
 static int cnt=0 ;
 static pthread_mutex_t m;
+//static bool getout = false;
 
 player p;
 
@@ -49,6 +50,19 @@ void * Tetris(void * arg){
     int sock = multiarg->sock;
     RenderWindow * scr = multiarg->scr;
 
+
+    /*
+    Texture wait;
+    wait.loadFromFile("./img/frame.png");
+    Sprite wait_s(wait);
+
+    (*scr).clear(Color::White) ;
+    (*scr).draw(wait_s);
+    (*scr).display();
+    (*scr).clear(Color::White) ;
+*/
+
+
     Texture t1, t2, t3 ;
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
@@ -71,8 +85,13 @@ void * Tetris(void * arg){
                 if(e.key.code == Keyboard::Up) p.set_rotate(true) ;
                 else if(e.key.code == Keyboard::Left) p.set_move(-1) ;
                 else if(e.key.code == Keyboard::Right) p.set_move(1) ;
-                else if(e.key.code == Keyboard::Space) 
-                    p.space_block(delay) ;            
+                else if(e.key.code == Keyboard::Space) p.space_block(delay) ; 
+                else if(e.key.code == Keyboard::LShift) {
+                    if(!p.get_hold_use()) {
+                        p.hold_action();
+                        p.set_hold_use(true);
+                    }
+                }
             }
         }
         
@@ -87,6 +106,7 @@ void * Tetris(void * arg){
                 p.fix_cur_block();
                 p.generate_new_Block() ; 
                 if(cnt < 89 ) cnt++ ; 
+                p.set_hold_use(false);
             }
             timer = 0;
         }
@@ -100,6 +120,8 @@ void * Tetris(void * arg){
 
         ColoringBoardMulti(*scr, block);
         ColoringBlockMulti(*scr, block);
+        ColoringNextBlock(*scr, block);
+        ColoringHoldBlock(*scr, block);
 
         //write
         char * temp = new char[BUF_SIZE];
@@ -197,5 +219,32 @@ void ColoringBlockMulti(RenderWindow & scr, Sprite & block) {
         block.setPosition((p.get_Cur_Enemy_Block().get_Cur_pos(i).x+15)*18, (p.get_Cur_Enemy_Block().get_Cur_pos(i).y)*18) ;
         block.move(28, 31) ;
         scr.draw(block) ;          
+    }
+}
+
+void ColoringNextBlock(RenderWindow & scr, Sprite & block) {
+    for(size_t j = 0; j<5; j++) {
+        Block b(p.get_next_block(j));
+
+        for(size_t i=0 ; i<4 ; i++){
+            Point Cur_pos = b.get_Cur_pos(i);
+            block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+            block.setPosition((b.get_Cur_pos(i).x+8)*18, b.get_Cur_pos(i).y*18+18*(j*3)) ;
+            block.move(28, 40) ;
+            scr.draw(block) ;      
+        }    
+    }
+}
+
+void ColoringHoldBlock(RenderWindow & scr, Sprite & block) {
+    if(p.get_hold() == -1) return;
+    Block b(p.get_hold());
+
+    for(size_t i=0 ; i<4 ; i++){
+        Point Cur_pos = b.get_Cur_pos(i);
+        block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+        block.setPosition((b.get_Cur_pos(i).x)*18, b.get_Cur_pos(i).y*18-18) ;
+        block.move(28, 40) ;
+        scr.draw(block) ;      
     }
 }

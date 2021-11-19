@@ -18,6 +18,8 @@ void * Tetris(void * arg);
 void * ReadEnemy(void * arg);
 void ColoringBoardMulti(RenderWindow& scr, Sprite & block);
 void ColoringBlockMulti(RenderWindow& scr, Sprite & block);
+void ColoringHoldBlock(RenderWindow& scr, Sprite & block);
+void ColoringNextBlock(RenderWindow& scr, Sprite & block);
 void Convert(char * buf);
 
 #endif

@@ -36,9 +36,9 @@ int main()
 	serv_adr.sin_port=htons(WELL_KNOWN_PORT);
 	
 	if(bind(serv_sock, (struct sockaddr*) &serv_adr, sizeof(serv_adr))==-1)
-		Error("bind() error");
+		Error("BIND ERROR!!\n wait a minute.\n");
 	if(listen(serv_sock, 2)==-1)
-		Error("listen() error");
+		Error("LISTEN ERROR!!");
 	
 	while(1)
 	{
