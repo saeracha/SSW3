@@ -133,7 +133,7 @@ void * Tetris(void * arg){
         ColoringBlockMulti(*scr, block);
         ColoringNextBlock(*scr, block);
         ColoringHoldBlock(*scr, block);
-        ColoringScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+    //    ColoringScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
 
         //write
         char * temp = new char[BUF_SIZE];
@@ -178,6 +178,15 @@ void draw(char * data, RenderWindow & scr) {
         temp_block.set_Cur_pos(i, data[RC+i*2+1]-'0', data[RC+i*2+2]-'0');
 
     p.set_Enemy_Block(temp_block);
+
+    p.set_enemy_hold(data[RC+9]-'0');
+    
+    int sum = 0;
+    for(int i = 0; i<5; i++) {
+        sum *= 10;
+        sum += data[RC+10+i] -'0';
+    }
+    p.set_enemy_score(sum);
 }
 
 void Convert(char * buf) {
@@ -190,6 +199,14 @@ void Convert(char * buf) {
     for(int i = 0; i<4; i++) { 
             buf[RC+1+i*2] = p.get_Cur_Block().get_Cur_pos(i).y +'0';
             buf[RC+1+i*2+1] = p.get_Cur_Block().get_Cur_pos(i).x + '0';
+    }
+
+    buf[RC+9] = p.get_hold() + '0';
+    
+    int score = p.get_score();
+    for(int i = 5; i>=0; i--) {
+        buf[RC+10+i] = (score%10)+'0';
+        score /= 10;
     }
 
     buf[BUF_SIZE-1] = '9'; 
@@ -249,15 +266,27 @@ void ColoringNextBlock(RenderWindow & scr, Sprite & block) {
 }
 
 void ColoringHoldBlock(RenderWindow & scr, Sprite & block) {
-    if(p.get_hold() == -1) return;
-    Block b(p.get_hold());
+    if(p.get_hold() != -1) {
+        Block b(p.get_hold());
 
-    for(size_t i=0 ; i<4 ; i++){
-        Point Cur_pos = b.get_Cur_pos(i);
-        block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
-        block.setPosition((b.get_Cur_pos(i).x)*18, b.get_Cur_pos(i).y*18-18) ;
-        block.move(28, 40) ;
-        scr.draw(block) ;      
+        for(size_t i=0 ; i<4 ; i++){
+            Point Cur_pos = b.get_Cur_pos(i);
+            block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+            block.setPosition((b.get_Cur_pos(i).x)*18, b.get_Cur_pos(i).y*18-18) ;
+            block.move(28, 40) ;
+            scr.draw(block) ;      
+        }
+    }
+    if(p.get_enemy_hold() != -1) {
+        Block b(p.get_enemy_hold());
+
+        for(size_t i=0 ; i<4 ; i++){
+            Point Cur_pos = b.get_Cur_pos(i);
+            block.setTextureRect(IntRect(b.get_TYPE()*18, 0, 15, 15)) ;
+            block.setPosition((b.get_Cur_pos(i).x+20)*18, b.get_Cur_pos(i).y*18-18) ;
+            block.move(28, 40) ;
+            scr.draw(block) ;      
+        }    
     }
 }
 

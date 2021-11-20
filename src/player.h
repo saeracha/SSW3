@@ -16,6 +16,8 @@ class player {
         int hold;
         bool hold_use;
 		int board[ROW][COL];
+        int enemy_score;
+        int enemy_hold;
         int enemy_board[ROW][COL];
         std::vector <int> next_block;
         Block Cur_Block ;
@@ -46,6 +48,8 @@ class player {
         int get_move();
         bool get_rotate();
 		int get_board(int y, int x);
+        int get_enemy_hold();
+        int get_enemy_score();
         int get_enemy_board(int y, int x);
         Block get_Cur_Block() ;
         Block get_Cur_Enemy_Block();
@@ -58,6 +62,8 @@ class player {
 		void set_combo(bool success);
 		void set_tetris(bool success);
 		void set_board(int y, int x, int value);
+        void set_enemy_hold(int n);
+        void set_enemy_score(int n);
         void set_enemy_board(int y, int x, int value);
         void set_cur_pos(int y, int x, int cur);
         void set_move(int move);

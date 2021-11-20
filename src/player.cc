@@ -30,6 +30,12 @@ void player::set_hold(int n) {hold = n;}
 bool player::get_hold_use() {return hold_use;}
 void player::set_hold_use(bool use) {hold_use = use;}
 
+int player::get_enemy_hold() { return enemy_hold;}
+void player::set_enemy_hold(int n) { enemy_hold = n; }
+
+int player::get_enemy_score() { return enemy_score; }
+void player::set_enemy_score(int n) { enemy_score = n; }
+
 void player::set_enemy_board(int y, int x, int value) {
     enemy_board[y][x] = value;
 }
