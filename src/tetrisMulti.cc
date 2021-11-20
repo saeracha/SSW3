@@ -64,11 +64,22 @@ void * Tetris(void * arg){
 
 
     Texture t1, t2, t3 ;
+    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9 ;
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
 	t3.loadFromFile("./img/frame.png") ;
 	Sprite block(t1), background(t2), frame(t3) ;  
-    
+    tt0.loadFromFile("./img/zero.png") ;
+    tt1.loadFromFile("./img/one.png") ;
+    tt2.loadFromFile("./img/two.png") ;
+    tt3.loadFromFile("./img/three.png") ;
+    tt4.loadFromFile("./img/four.png") ;
+    tt5.loadFromFile("./img/five.png") ;
+    tt6.loadFromFile("./img/six.png") ;
+    tt7.loadFromFile("./img/seven.png") ;
+    tt8.loadFromFile("./img/eight.png") ;
+    tt9.loadFromFile("./img/nine.png") ; 
+    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0) ;
 	while((*scr).isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
 		game_clock.restart() ;
@@ -122,6 +133,7 @@ void * Tetris(void * arg){
         ColoringBlockMulti(*scr, block);
         ColoringNextBlock(*scr, block);
         ColoringHoldBlock(*scr, block);
+        ColoringScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
 
         //write
         char * temp = new char[BUF_SIZE];
@@ -248,3 +260,50 @@ void ColoringHoldBlock(RenderWindow & scr, Sprite & block) {
         scr.draw(block) ;      
     }
 }
+
+void ColoringScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p){
+
+    int score = p.get_score() ;
+    std::vector <int> score_num ;
+    int digit = 0 ;
+    score_num.push_back(0) ;
+    while(score > 0){
+        score_num.push_back(score % 10) ;
+        score = score / 10 ;
+        digit ++ ;
+    }
+    for(size_t i=0 ; i<=digit ; i++){
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 28, 28) ;   
+    }
+   
+}
+
+/*
+
+
+void print_number(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit){
+        if(k== 0){
+            zero.setTextureRect(IntRect(0,0,24,36)) ; zero.setPosition(24*(digit-i), 0) ; zero.move(28, 28) ; scr.draw(zero) ;
+        }else if(k == 1){
+            one.setTextureRect(IntRect(0,0,24,36)) ; one.setPosition(24*(digit-i),0) ; one.move(28, 28) ; scr.draw(one) ;
+        }else if(k == 2){
+            two.setTextureRect(IntRect(0,0,24,36)) ; two.setPosition(24*(digit-i),0) ; two.move(28, 28) ; scr.draw(two) ;
+        }else if(k == 3){
+            three.setTextureRect(IntRect(0,0,24,36)) ; three.setPosition(24*(digit-i),0) ; three.move(28, 28) ; scr.draw(three) ;
+        }else if(k == 4){
+            four.setTextureRect(IntRect(0,0,24,36)) ; four.setPosition(24*(digit-i),0) ; four.move(28, 28) ; scr.draw(four) ;
+        }else if(k == 5){
+            five.setTextureRect(IntRect(0,0,24,36)) ; five.setPosition(24*(digit-i),0) ; five.move(28, 28) ; scr.draw(five) ;
+        }else if(k == 6){
+            six.setTextureRect(IntRect(0,0,24,36)) ; six.setPosition(24*(digit-i),0) ; six.move(28, 28) ; scr.draw(six) ;
+        }else if(k == 7){
+            seven.setTextureRect(IntRect(0,0,24,36)) ; seven.setPosition(24*(digit-i),0) ; seven.move(28, 28) ; scr.draw(seven) ;
+        }else if(k == 8){
+            eight.setTextureRect(IntRect(0,0,24,36)) ; eight.setPosition(24*(digit-i),0) ; eight.move(28, 28) ; scr.draw(eight) ;
+        }else if(k == 9){
+            nine.setTextureRect(IntRect(0,0,24,36)) ; nine.setPosition(24*(digit-i),0) ; nine.move(28, 28) ; scr.draw(nine) ;     
+        }
+}
+
+*/
+

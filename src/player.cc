@@ -104,7 +104,9 @@ void player::line_clear(){
     
         if(cnt != COL){
             k = k-1 ;
+            combo = 0 ;
         }else{
+            combo ++ ;
             point ++ ;
         }
     }
@@ -113,7 +115,8 @@ void player::line_clear(){
             board[0][i] = 0 ;
         }
     }
-    score = score + point ;
+    score = score + point + combo;
+    //combo ++ ;
 }
 
 void player::generate_new_Block(){ 

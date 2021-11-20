@@ -21,5 +21,8 @@ void ColoringBlockMulti(RenderWindow& scr, Sprite & block);
 void ColoringHoldBlock(RenderWindow& scr, Sprite & block);
 void ColoringNextBlock(RenderWindow& scr, Sprite & block);
 void Convert(char * buf);
+void ColoringScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p) ;
+//void print_number(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit) ;
+
 
 #endif
