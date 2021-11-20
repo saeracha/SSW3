@@ -94,7 +94,7 @@ void player::fix_cur_block() {
 
 void player::line_clear(){
     int k=ROW-1 ;
-
+    int point=0 ;
     for(int i=ROW-1 ; i>=0 ; i--){
         int cnt = 0 ;
         for(size_t j=0  ;j<COL; j++){
@@ -104,13 +104,16 @@ void player::line_clear(){
     
         if(cnt != COL){
             k = k-1 ;
+        }else{
+            point ++ ;
         }
     }
     if(k != -1){
         for(size_t i=0 ; i<COL ; i++){
             board[0][i] = 0 ;
         }
-    } 
+    }
+    score = score + point ;
 }
 
 void player::generate_new_Block(){ 
