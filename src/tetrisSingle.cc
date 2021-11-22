@@ -47,10 +47,11 @@ void Tetris(player &p){
                 p.generate_new_Block() ; 
                 if(cnt < 89 ) cnt++ ;
                 p.set_hold_use(false);
+                p.line_clear();
             }
             timer = 0;
         }
-        p.line_clear() ;        
+        //p.line_clear() ;        
         p.set_move(0);
         p.set_rotate(false);
         delay = delays[cnt/10];

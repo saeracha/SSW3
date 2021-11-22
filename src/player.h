@@ -79,9 +79,11 @@ class player {
         void space_block(float & delay) ;
         void fix_cur_block();
         void generate_new_Block();
-        void line_clear();
+        char line_clear();
         void generate_next_block();
         void hold_action();
+        void attacked(int n);
+        void makeline(int n);
 };
 
  

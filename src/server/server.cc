@@ -67,7 +67,7 @@ void * Handle(void * arg)
         pthread_mutex_lock(&mu);
         //error detect
         if(len != BUF_SIZE) continue;
-        if(data[BUF_SIZE-1] != '9') continue; 
+        if(data[BUF_SIZE-1] <= '9') continue; 
 
         SendData(clnt_sock, data, len);
         pthread_mutex_unlock(&mu);

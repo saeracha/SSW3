@@ -34,6 +34,7 @@ class Block {
         void set_TYPE(int type);
         void set_Cur_pos(int cur, int y, int x);
 
+        void move_up();
         void MOVE(); // down
         void ROTATE() ;
         bool Out_of_Range() ;

@@ -98,7 +98,7 @@ void player::fix_cur_block() {
     }
 }
 
-void player::line_clear(){
+char player::line_clear(){
     int k=ROW-1 ;
     int point=0 ;
     for(int i=ROW-1 ; i>=0 ; i--){
@@ -111,22 +111,28 @@ void player::line_clear(){
         if(cnt != COL){
             k = k-1 ;
         }else{
-            point ++ ;
+            score += 10;
         }
     }
+
+    //k == -1 means no clear
+    if(k == 3) score += 30;
+    if(k == 2) score += 10;
 
     if(k != -1){
         for(size_t i=0 ; i<COL ; i++){
             board[0][i] = 0 ;
         }
     }
-    if(point==0){
-        combo = 0 ;
-    }else{
-        combo++ ;
-    }
-    if(combo<=1) score = score + point ;
-    else score = score + point + (combo-1) ;
+
+    if(k==-1) combo = 0;
+    else combo++;
+    
+    score += ((combo-1)/2)*5;
+    
+    if(k == 3) return 'd'+(int)(combo/2.5);
+    else if(k == 2) return 'b'+(int)(combo/2.5);
+    return 'a'+(int)(combo/2.5);
 }
 
 void player::generate_new_Block(){ 
@@ -136,8 +142,16 @@ void player::generate_new_Block(){
 }
 
 void player::generate_next_block() {
-    while(next_block.size() < 10) {
+    while(next_block.size() < 11) {
         int n = rand()%7;
+
+        int cnt = 0;
+        for(int i = 0; i<next_block.size(); i++) {
+            if(next_block[i] == n)
+                cnt++;
+        }
+        if(cnt > 1) continue;
+
         next_block.push_back(n);
     }
 }
@@ -151,5 +165,45 @@ void player::hold_action() {
         int hold_block = hold;
         hold = Cur_Block.get_TYPE()-1;
         Cur_Block = Block(hold_block);
+    }
+}
+
+void player::attacked(int num) {
+    for(int i = num; i<ROW; i++) {
+        for(int j = 0; j<COL; j++) {
+            board[i-num][j] = board[i][j];
+        }
+    }   
+    
+    makeline(num);
+   /* 
+    int low_y=ROW;
+    for(int i = 0; i<4; i++) {
+        low_y = low_y < Cur_Block.get_Cur_pos(i).y ? low_Y : Cur_Block.get_Cur_pos(i).y;
+    }
+
+    for(int i = 0; i<4; i++) {
+        do() {
+        int cur_y = Cur_Block.get_Cur_pos(i).y;
+        
+        if(cur_y < 0)break;
+        Cur_Block.move_up();
+
+        }while(board[cur_y][cur_x]);
+    }*/
+}
+
+void player::makeline(int num) {
+    int r = rand()%COL;
+
+
+    for(int i = ROW-1; i>= ROW-num; i--) {
+        for(int j = 0; j<COL; j++) {
+            if(j == r) {
+                board[i][j] = 0; 
+                continue;
+            }
+            board[i][j] = 1;
+        }
     }
 }

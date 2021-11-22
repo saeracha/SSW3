@@ -36,6 +36,12 @@ void Block::MOVE(int move){
     }
 }
 
+void Block::move_up() {
+    for(size_t i = 0; i<4; i++) {
+            Cur_pos[i].y--;    
+    }
+}
+
 void Block::MOVE(){
     for(size_t i=0 ; i<4 ; i++){
         Cur_pos[i].y++ ;

@@ -13,9 +13,9 @@ static float timer=0 ;
 static float delay = 0.3 ;
 static float delays[9] = {1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2} ;
 static int cnt=0 ;
-static pthread_mutex_t m;
 
 player p;
+static pthread_mutex_t mutex;
 
 typedef struct MultiArg {
     int sock;
@@ -34,7 +34,7 @@ void TetrisBattle(int & sock) {
     multiarg->sock = sock;
     multiarg->scr = &scr;
 
-    pthread_mutex_init(&m, NULL);
+    pthread_mutex_init(&mutex, NULL);
 	pthread_create(&send_thread, NULL, Tetris, (void*)multiarg);
 	pthread_create(&read_thread, NULL, ReadEnemy, (void*)multiarg);
 	pthread_join(send_thread, &thread_return);
@@ -47,7 +47,7 @@ void * Tetris(void * arg){
     MultiArg * multiarg = (MultiArg*)arg;
     int sock = multiarg->sock;
     RenderWindow * scr = multiarg->scr;
-
+    char att = 'a';
 
 	while((*scr).isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
@@ -83,21 +83,26 @@ void * Tetris(void * arg){
         if(timer>delay){
             if(p.check_move_down()) p.move_down() ;
             else {
-                p.fix_cur_block();
-                p.generate_new_Block() ; 
+                p.fix_cur_block(); 
                 if(cnt < 89 ) cnt++ ; 
                 p.set_hold_use(false);
+
+                pthread_mutex_lock(&mutex);
+                p.generate_new_Block();
+                att = p.line_clear();
+                pthread_mutex_unlock(&mutex);
             }
             timer = 0;
-        }
-        p.line_clear() ;        
+        } 
         p.set_move(0);
         p.set_rotate(false);
         delay = delays[cnt/10];
+       
         char * temp = new char[BUF_SIZE];
         Convert(temp);
+        temp[BUF_SIZE-1] = att;
         int len = write(sock, temp, BUF_SIZE);
-
+        att = 'a';
 
         visual_Multi(*scr, p) ;
         (*scr).display();
@@ -119,13 +124,20 @@ void * ReadEnemy(void * arg) {
         if(len == -1) return NULL;
         if(data[BUF_SIZE-1] <= '7' ) continue;
 
+        if(data[BUF_SIZE-1] >= 'b' && data[BUF_SIZE-1] <= 'o') {
+            pthread_mutex_lock(&mutex);
+            p.attacked(data[BUF_SIZE-1]-'a');
+            pthread_mutex_unlock(&mutex);
+        }
         draw(data, *scr);
     }
     
     return NULL;
 }
 
+
 void draw(char * data, RenderWindow & scr) {
+
     for(size_t i=0 ; i<ROW ; i++)
         for(size_t j=0 ; j<COL ; j++)
                 p.set_enemy_board(i, j, data[i*COL+j]-'0');
