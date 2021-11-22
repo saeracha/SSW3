@@ -21,7 +21,7 @@ Block:: Block(){
 
 Block::Block(int n) {
     TYPE = n + 1;
-    for(size_t i=0 ; i<4;  i++){
+    for(size_t i=0; i<4;  i++){
         Cur_pos[i].x = block_shape[n][i] %4 + 3 ;
         Cur_pos[i].y = block_shape[n][i] /4 ;
     }

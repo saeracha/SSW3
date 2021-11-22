@@ -19,14 +19,6 @@ void draw(char * data, RenderWindow& scr);
 void * Tetris(void * arg);
 void * ReadEnemy(void * arg);
 void visual_Multi(RenderWindow & scr, player & p) ;
-/*void ColoringBoardMulti(RenderWindow& scr, Sprite & block);
-void ColoringBlockMulti(RenderWindow& scr, Sprite & block);
-void ColoringHoldBlock(RenderWindow& scr, Sprite & block);
-void ColoringNextBlock(RenderWindow& scr, Sprite & block);*/
 void Convert(char * buf);
-/*void ColoringScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p) ;
-void ColoringEnemyScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p) ;
-void print_number_Multi(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit, int off1, int off2) ;*/ 
-
 
 #endif

@@ -169,12 +169,40 @@ void player::hold_action() {
 }
 
 void player::attacked(int num) {
-    for(int i = num; i<ROW; i++) {
-        for(int j = 0; j<COL; j++) {
-            board[i-num][j] = board[i][j];
+
+    for(int i=0 ; i<num ; i++){
+        for(int j=0 ; j<COL ; j++){
+            if(board[i][j]) {
+                //gameover
+            }
         }
-    }   
-    
+    }
+        
+    int k ;
+
+    for(k=0 ; k<num ; k++){
+        if(Cur_Block.Preoccupied_down(board)){
+            fix_cur_block() ;
+            break ;
+        }
+        
+        for(int i = num-k; i<ROW-k; i++) {
+            for(int j = 0; j<COL; j++) {
+                board[i-1][j] = board[i][j];
+            }
+        }
+    }
+
+    if(k!=num-1){
+        for(int l=k ; l<num ; l++){        
+            for(int i = num-l; i<ROW-l; i++) {
+                for(int j = 0; j<COL; j++) {
+                    board[i-1][j] = board[i][j];
+                }
+            }
+        }
+    }
+   
     makeline(num);
    /* 
     int low_y=ROW;
