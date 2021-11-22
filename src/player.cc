@@ -110,19 +110,23 @@ void player::line_clear(){
     
         if(cnt != COL){
             k = k-1 ;
-            combo = 0 ;
         }else{
-            combo ++ ;
             point ++ ;
         }
     }
+
     if(k != -1){
         for(size_t i=0 ; i<COL ; i++){
             board[0][i] = 0 ;
         }
     }
-    score = score + point + combo;
-    //combo ++ ;
+    if(point==0){
+        combo = 0 ;
+    }else{
+        combo++ ;
+    }
+    if(combo<=1) score = score + point ;
+    else score = score + point + (combo-1) ;
 }
 
 void player::generate_new_Block(){ 

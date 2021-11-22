@@ -12,8 +12,8 @@ int cnt=0 ;
 void Tetris(player &p){
     srand(time(0));
     RenderWindow scr(VideoMode(320, 480), "Setup") ;
-    Texture t1, t2, t3 ;
-    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9 ;
+/*    Texture t1, t2, t3 ;
+    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb ;
 
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
@@ -29,11 +29,11 @@ void Tetris(player &p){
     tt7.loadFromFile("./img/seven.png") ;
     tt8.loadFromFile("./img/eight.png") ;
     tt9.loadFromFile("./img/nine.png") ;
-   // tt0.loadFromFile("./img/zero.png") ;
+    ttb.loadFromFile("./img/blank.png") ;
 
 	Sprite block(t1), background(t2), frame(t3) ;
 
-    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0) ;
+    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb);*/ 
     
 	while(scr.isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
@@ -78,19 +78,60 @@ void Tetris(player &p){
         p.set_rotate(false);
         delay = delays[cnt/10];
 
-        scr.clear(Color::White) ;
-        scr.draw(background) ;
-
-        ColoringBoard(scr, block, p);
+     /*   scr.clear(Color::White) ;
+        scr.draw(background) ;*/ 
+        visual(scr, p) ;
+    /*    ColoringBoard(scr, block, p);
         ColoringBlock(scr, block, p);
         ColoringNextBlock(scr, block, p);
         ColoringHoldBlock(scr, block, p);
         
+        ColoringBlankBoard(scr, blank, p) ;
         ColoringScoreBoard(scr,zero, one, two, three, four, five, six, seven, eight, nine, p) ;
         ColoringCombo(scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
-        scr.draw(frame) ;
+        scr.draw(frame) ;*/ 
         scr.display();
     }
+}
+
+
+void visual(RenderWindow & scr, player & p){
+    Texture t1, t2, t3 ;
+    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb ;
+
+	t1.loadFromFile("./img/tiles.png") ;
+	t2.loadFromFile("./img/background.png") ;
+	t3.loadFromFile("./img/frame.png") ;
+
+    tt0.loadFromFile("./img/zero.png") ;
+    tt1.loadFromFile("./img/one.png") ;
+    tt2.loadFromFile("./img/two.png") ;
+    tt3.loadFromFile("./img/three.png") ;
+    tt4.loadFromFile("./img/four.png") ;
+    tt5.loadFromFile("./img/five.png") ;
+    tt6.loadFromFile("./img/six.png") ;
+    tt7.loadFromFile("./img/seven.png") ;
+    tt8.loadFromFile("./img/eight.png") ;
+    tt9.loadFromFile("./img/nine.png") ;
+    ttb.loadFromFile("./img/blank.png") ;
+
+	Sprite block(t1), background(t2), frame(t3) ;
+
+    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb);
+    
+    scr.clear(Color::White) ;
+    scr.draw(background) ;
+    ColoringBoard(scr, block, p);
+    ColoringBlock(scr, block, p);
+    ColoringNextBlock(scr, block, p);
+    ColoringHoldBlock(scr, block, p);
+        
+    ColoringBlankBoard(scr, blank, p) ;
+    ColoringScoreBoard(scr,zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+    ColoringCombo(scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+    scr.draw(frame) ;
+    scr.display();
+ 
 }
 
 void ColoringBoard(RenderWindow & scr, Sprite & block, player & p) { 
@@ -105,6 +146,7 @@ void ColoringBoard(RenderWindow & scr, Sprite & block, player & p) {
         }
     }
 }
+
 
 void ColoringBlock(RenderWindow & scr, Sprite & block, player & p) {
     for(size_t i=0 ; i<4 ; i++){
@@ -147,6 +189,13 @@ void ColoringHoldBlock(RenderWindow & scr, Sprite & block, player & p) {
     }
 }
 
+void ColoringBlankBoard(RenderWindow & scr, Sprite & blank, player & p){
+    for(int i=0 ; i<10 ; i++){
+         blank.setTextureRect(IntRect(0,0,24,36)) ; blank.setPosition(24*i, 0) ; blank.move(28, 410) ; scr.draw(blank) ;
+    }
+
+}
+
 void ColoringScoreBoard(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p){
 
     int score = p.get_score() ;
@@ -159,7 +208,7 @@ void ColoringScoreBoard(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite 
         digit ++ ;
     }
     for(size_t i=0 ; i<=digit ; i++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 28, 28) ;   
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 28, 410) ;   
     }
    
 }
@@ -178,7 +227,7 @@ void ColoringCombo(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two
         }
     }
     for(size_t i=0 ; i<digit ; i++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, combo_num.at(i), i, digit, 28, 60) ;
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, combo_num.at(i), i, digit, 220, 410) ;
     }
 
 }

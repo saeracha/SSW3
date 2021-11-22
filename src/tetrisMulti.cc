@@ -63,12 +63,13 @@ void * Tetris(void * arg){
 */
 
 
-    Texture t1, t2, t3 ;
+    Texture t1, t2, t3, t4 ;
     Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9 ;
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
 	t3.loadFromFile("./img/frame.png") ;
-	Sprite block(t1), background(t2), frame(t3) ;  
+    t4.loadFromFile("./img/frame_enemy.png") ;
+	Sprite block(t1), background(t2), frame(t3), frame_enemy(t4) ;  
     tt0.loadFromFile("./img/zero.png") ;
     tt1.loadFromFile("./img/one.png") ;
     tt2.loadFromFile("./img/two.png") ;
@@ -133,14 +134,20 @@ void * Tetris(void * arg){
         ColoringBlockMulti(*scr, block);
         ColoringNextBlock(*scr, block);
         ColoringHoldBlock(*scr, block);
-    //    ColoringScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
-
+        ColoringScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+        ColoringEnemyScoreBoardMulti(*scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
         //write
         char * temp = new char[BUF_SIZE];
         Convert(temp);
         int len = write(sock, temp, BUF_SIZE);
 
         (*scr).draw(frame) ;
+       // frame_enemy.move(270,0) ;
+        frame_enemy.setTextureRect(IntRect(0, 0, 212, 470)) ;
+        frame_enemy.setPosition(0, 0) ;
+        frame_enemy.move(334, 0) ;
+        (*scr).draw(frame_enemy) ;
+        //(*scr).draw(frame_enemy) ;
         (*scr).display();
     }
     return NULL;
@@ -182,7 +189,7 @@ void draw(char * data, RenderWindow & scr) {
     p.set_enemy_hold(data[RC+9]-'0');
     
     int sum = 0;
-    for(int i = 0; i<5; i++) {
+    for(int i = 0; i<6; i++) {
         sum *= 10;
         sum += data[RC+10+i] -'0';
     }
@@ -225,7 +232,7 @@ void ColoringBoardMulti(RenderWindow & scr, Sprite & block) {
  
             if(p.get_enemy_board(i, j)){
                 block.setTextureRect(IntRect(p.get_enemy_board(i,j)*18, 0, 18, 18)) ;
-                block.setPosition((j+15)*18, i*18) ;
+                block.setPosition((j+18)*18, i*18) ;
                 block.move(28, 31) ;
                 scr.draw(block) ;
             }
@@ -245,7 +252,7 @@ void ColoringBlockMulti(RenderWindow & scr, Sprite & block) {
     for(size_t i=0 ; i<4 ; i++){
         Point Cur_pos = (p.get_Cur_Enemy_Block()).get_Cur_pos(i);
         block.setTextureRect(IntRect(p.get_Cur_Enemy_Block().get_TYPE()*18, 0, 18, 18)) ;
-        block.setPosition((p.get_Cur_Enemy_Block().get_Cur_pos(i).x+15)*18, (p.get_Cur_Enemy_Block().get_Cur_pos(i).y)*18) ;
+        block.setPosition((p.get_Cur_Enemy_Block().get_Cur_pos(i).x+18)*18, (p.get_Cur_Enemy_Block().get_Cur_pos(i).y)*18) ;
         block.move(28, 31) ;
         scr.draw(block) ;          
     }
@@ -302,37 +309,56 @@ void ColoringScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sp
         digit ++ ;
     }
     for(size_t i=0 ; i<=digit ; i++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 28, 28) ;   
+        print_number_Multi(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 28, 410) ;   
+    }
+   
+}
+void ColoringEnemyScoreBoardMulti(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p){
+
+    int score = p.get_enemy_score() ;
+    std::vector <int> score_num ;
+    int digit = 0 ;
+    int i=0 ;
+    score_num.push_back(0) ;
+
+    while(score > 0){
+        score_num.push_back(score % 10) ;
+        score = score / 10 ;
+        digit ++ ;
+    }
+    for(size_t i=0 ; i<=digit ; i++){
+        print_number_Multi(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 362, 410) ;   
     }
    
 }
 
-/*
 
-
-void print_number(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit){
+void print_number_Multi(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit, int off1, int off2){
         if(k== 0){
-            zero.setTextureRect(IntRect(0,0,24,36)) ; zero.setPosition(24*(digit-i), 0) ; zero.move(28, 28) ; scr.draw(zero) ;
+            zero.setTextureRect(IntRect(0,0,24,36)) ; zero.setPosition(24*(digit-i), 0) ; zero.move(off1, off2) ; scr.draw(zero) ;
         }else if(k == 1){
-            one.setTextureRect(IntRect(0,0,24,36)) ; one.setPosition(24*(digit-i),0) ; one.move(28, 28) ; scr.draw(one) ;
+            one.setTextureRect(IntRect(0,0,24,36)) ; one.setPosition(24*(digit-i),0) ; one.move(off1, off2) ; scr.draw(one) ;
         }else if(k == 2){
-            two.setTextureRect(IntRect(0,0,24,36)) ; two.setPosition(24*(digit-i),0) ; two.move(28, 28) ; scr.draw(two) ;
+            two.setTextureRect(IntRect(0,0,24,36)) ; two.setPosition(24*(digit-i),0) ; two.move(off1, off2) ; scr.draw(two) ;
         }else if(k == 3){
-            three.setTextureRect(IntRect(0,0,24,36)) ; three.setPosition(24*(digit-i),0) ; three.move(28, 28) ; scr.draw(three) ;
+            three.setTextureRect(IntRect(0,0,24,36)) ; three.setPosition(24*(digit-i),0) ; three.move(off1, off2); scr.draw(three) ;
         }else if(k == 4){
-            four.setTextureRect(IntRect(0,0,24,36)) ; four.setPosition(24*(digit-i),0) ; four.move(28, 28) ; scr.draw(four) ;
+            four.setTextureRect(IntRect(0,0,24,36)) ; four.setPosition(24*(digit-i),0) ; four.move(off1, off2); scr.draw(four) ;
         }else if(k == 5){
-            five.setTextureRect(IntRect(0,0,24,36)) ; five.setPosition(24*(digit-i),0) ; five.move(28, 28) ; scr.draw(five) ;
+            five.setTextureRect(IntRect(0,0,24,36)) ; five.setPosition(24*(digit-i),0) ; five.move(off1, off2) ; scr.draw(five) ;
         }else if(k == 6){
-            six.setTextureRect(IntRect(0,0,24,36)) ; six.setPosition(24*(digit-i),0) ; six.move(28, 28) ; scr.draw(six) ;
+            six.setTextureRect(IntRect(0,0,24,36)) ; six.setPosition(24*(digit-i),0) ; six.move(off1, off2); scr.draw(six) ;
         }else if(k == 7){
-            seven.setTextureRect(IntRect(0,0,24,36)) ; seven.setPosition(24*(digit-i),0) ; seven.move(28, 28) ; scr.draw(seven) ;
+            seven.setTextureRect(IntRect(0,0,24,36)) ; seven.setPosition(24*(digit-i),0) ; seven.move(off1, off2); scr.draw(seven) ;
         }else if(k == 8){
-            eight.setTextureRect(IntRect(0,0,24,36)) ; eight.setPosition(24*(digit-i),0) ; eight.move(28, 28) ; scr.draw(eight) ;
+            eight.setTextureRect(IntRect(0,0,24,36)) ; eight.setPosition(24*(digit-i),0) ; eight.move(off1, off2) ; scr.draw(eight) ;
         }else if(k == 9){
-            nine.setTextureRect(IntRect(0,0,24,36)) ; nine.setPosition(24*(digit-i),0) ; nine.move(28, 28) ; scr.draw(nine) ;     
+            nine.setTextureRect(IntRect(0,0,24,36)) ; nine.setPosition(24*(digit-i),0) ; nine.move(off1, off2); scr.draw(nine) ;     
         }
 }
 
-*/
+
+
+
+
 
