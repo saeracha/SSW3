@@ -39,7 +39,8 @@ int main()
 		Error("BIND ERROR!!\n wait a minute.\n");
 	if(listen(serv_sock, 2)==-1)
 		Error("LISTEN ERROR!!");
-	
+
+    std::cout << "The server is open\n";
 	while(1)
 	{
 		clnt_adr_sz=sizeof(clnt_adr);
@@ -68,7 +69,7 @@ void * Handle(void * arg)
         //error detect
         if(len != BUF_SIZE) continue;
         if(data[BUF_SIZE-1] <= '9') continue; 
-
+        
         SendData(clnt_sock, data, len);
         pthread_mutex_unlock(&mu);
     }
@@ -87,6 +88,7 @@ void * Handle(void * arg)
 	pthread_mutex_unlock(&m);
 
 	close(clnt_sock);
+    std::cout << "Client is disconnected\n";
 	return NULL;
 }
 

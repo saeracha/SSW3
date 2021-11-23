@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 #include <algorithm> 
 #include <vector>
+#include <iostream>
 #include "block.h"
 #define ROW	20
 #define COL	10	
@@ -10,7 +11,10 @@ class player {
 	private:
 		int score;
 		int combo;
+        int max_com;
+        int sum_tetris;
 		bool tetris;
+        bool win;
         int move;
         bool rotate;
         int hold;
@@ -24,7 +28,7 @@ class player {
         Block Cur_Enemy_Block;
 
 	public:
-        player() : score(0), combo(0), tetris(false), move(0), rotate(false), hold(-1), hold_use(false) {
+        player() : score(0), combo(0), max_com(0), sum_tetris(0), tetris(false), win(false), move(0), rotate(false), hold(-1), hold_use(false) {
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
             generate_next_block();
@@ -57,6 +61,7 @@ class player {
         int get_next_block(int n);
         int get_hold();
         bool get_hold_use();
+        bool get_win();
 
 		void set_score(int point);
 		void set_combo(bool success);
@@ -71,6 +76,7 @@ class player {
         void set_Enemy_Block(Block& block);
         void set_hold(int n);
         void set_hold_use(bool use);
+        void set_win(bool win);
 
         void check_move(int move);
         bool check_move_down();
@@ -84,6 +90,7 @@ class player {
         void hold_action();
         void attacked(int n);
         void makeline(int n);
+        void print_result();
 };
 
  

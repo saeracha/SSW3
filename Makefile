@@ -13,6 +13,7 @@ All : $(SERVER) $(TARGET)
 
 $(SERVER) : ./src/server/server.cc
 	@$(CC) -o $@ $^ -lpthread -D_REENTRANT
+	@echo "Server.cc Compiled!"
 
 $(TARGET) : $(OBJS)
 	@$(CC) $(CFLAGS) -o $@ $(SOURCES) -lsfml-graphics -lsfml-window -lsfml-system -lpthread -D_REENTRANT

@@ -20,5 +20,7 @@ void * Tetris(void * arg);
 void * ReadEnemy(void * arg);
 void visual_Multi(RenderWindow & scr, player & p) ;
 void Convert(char * buf);
+void Win(RenderWindow & scr, int sock);
+void Lose(RenderWindow & scr, int sock);
 
 #endif
