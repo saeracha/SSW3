@@ -19,8 +19,10 @@ void Tetris(player &p){
  
         Event e ;  
         while(scr.pollEvent(e)){
-            if (e.type == Event::Closed)
+            if (e.type == Event::Closed) {
                 scr.close() ;
+                return;
+            }
             
             if(e.type == Event::KeyPressed){
                 if(e.key.code == Keyboard::Up) p.set_rotate(true) ;
@@ -36,7 +38,6 @@ void Tetris(player &p){
             }
         }
         if(Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.03 ;
-        if(Keyboard::isKeyPressed(Keyboard::RShift)) delay = 1000 ;
         if(p.get_move()) p.check_move(p.get_move()) ;
         if(p.get_rotate()) p.check_rotate() ;
     
@@ -48,6 +49,16 @@ void Tetris(player &p){
                 if(cnt < 89 ) cnt++ ;
                 p.set_hold_use(false);
                 p.line_clear();
+
+                for(int i = 0; i<4; i++) {
+                    int y = p.get_Cur_Block().get_Cur_pos(i).y;
+                    int x = p.get_Cur_Block().get_Cur_pos(i).x;
+
+                    if(p.get_board(y, x)) {
+                        scr.close();
+                        return;
+                    }
+                }
             }
             timer = 0;
         }

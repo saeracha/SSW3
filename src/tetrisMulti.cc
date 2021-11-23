@@ -1,6 +1,7 @@
 #include "tetrisSingle.h"
 #include "tetrisMulti.h"
 #include <time.h>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <pthread.h>
 #include <sys/socket.h>
@@ -13,7 +14,7 @@ static float timer=0 ;
 static float delay = 0.3 ;
 static float delays[9] = {1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2} ;
 static int cnt=0 ;
-
+static int pass = 0;
 player p;
 static pthread_mutex_t mutex;
 
@@ -37,10 +38,13 @@ void TetrisBattle(int & sock) {
     pthread_mutex_init(&mutex, NULL);
 	pthread_create(&send_thread, NULL, Tetris, (void*)multiarg);
 	pthread_create(&read_thread, NULL, ReadEnemy, (void*)multiarg);
-	pthread_join(send_thread, &thread_return);
+    
+    pthread_join(send_thread, &thread_return);
 	pthread_join(read_thread, &thread_return);
 
+    close(sock);
     delete multiarg;
+    exit(0);
 }
 
 void * Tetris(void * arg){
@@ -48,6 +52,12 @@ void * Tetris(void * arg){
     int sock = multiarg->sock;
     RenderWindow * scr = multiarg->scr;
     char att = 'a';
+
+    //send and 
+    char * temp = new char[BUF_SIZE];
+    Convert(temp);
+    temp[BUF_SIZE-1] = 'x';
+    int len = write(sock, temp, BUF_SIZE);
 
 	while((*scr).isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
@@ -57,26 +67,42 @@ void * Tetris(void * arg){
         Event e ;  
         while((*scr).pollEvent(e)){
             if (e.type == Event::Closed) {
-                close(sock);
-                (*scr).close() ;
+                Lose(*scr, sock);
             }
             
             if(e.type == Event::KeyPressed){
                 if(e.key.code == Keyboard::Up) p.set_rotate(true) ;
-                else if(e.key.code == Keyboard::Left) p.set_move(-1) ;
-                else if(e.key.code == Keyboard::Right) p.set_move(1) ;
-                else if(e.key.code == Keyboard::Space) p.space_block(delay) ; 
+                else if(e.key.code == Keyboard::Left) p.set_move(-1);
+                else if(e.key.code == Keyboard::Right) p.set_move(1); 
+                else if(e.key.code == Keyboard::Space) p.space_block(delay) ;
                 else if(e.key.code == Keyboard::LShift) {
                     if(!p.get_hold_use()) {
                         p.hold_action();
                         p.set_hold_use(true);
                     }
+                }else if(e.key.code == Keyboard::Down){
+                    p.down_block(delay) ;
                 }
             }
         }
-        
-        if(Keyboard::isKeyPressed(Keyboard::Down)) delay = 0.03 ;
-        if(Keyboard::isKeyPressed(Keyboard::RShift)) delay = 1000 ;
+    
+        if(pass>0) {
+            if(pass == 1) {
+                char * temp = new char[BUF_SIZE];
+                Convert(temp);
+                temp[BUF_SIZE-1] = 'w';
+                int len = write(sock, temp, BUF_SIZE);
+            }
+            pass = -1;
+            init(p, *scr);
+        }
+
+        if(p.get_win()) {
+            Win(*scr, sock);
+        }
+
+        //if(Keyboard::isKeyPressed(Keyboard::Down)) p.down_block(delay) ;
+
         if(p.get_move()) p.check_move(p.get_move()) ;
         if(p.get_rotate()) p.check_rotate() ;
     
@@ -91,6 +117,15 @@ void * Tetris(void * arg){
                 p.generate_new_Block();
                 att = p.line_clear();
                 pthread_mutex_unlock(&mutex);
+
+                for(int i = 0; i<4; i++) {
+                    int y = p.get_Cur_Block().get_Cur_pos(i).y;
+                    int x = p.get_Cur_Block().get_Cur_pos(i).x;
+
+                    if(p.get_board(y, x)) {
+                        Lose(*scr, sock);
+                    }
+                }
             }
             timer = 0;
         } 
@@ -129,6 +164,17 @@ void * ReadEnemy(void * arg) {
             p.attacked(data[BUF_SIZE-1]-'a');
             pthread_mutex_unlock(&mutex);
         }
+
+        if(data[BUF_SIZE-1] == 'z') {
+            p.set_win(true);
+            pthread_exit(NULL);
+        }
+        else if(data[BUF_SIZE-1] == 'x') {
+            pass = 1;
+        }
+        else if(data[BUF_SIZE-1] == 'w') {
+            pass = 2;
+        }
         draw(data, *scr);
     }
     
@@ -137,7 +183,7 @@ void * ReadEnemy(void * arg) {
 
 
 void draw(char * data, RenderWindow & scr) {
-
+    if(pass >= 0) return;
     for(size_t i=0 ; i<ROW ; i++)
         for(size_t j=0 ; j<COL ; j++)
                 p.set_enemy_board(i, j, data[i*COL+j]-'0');
@@ -149,7 +195,6 @@ void draw(char * data, RenderWindow & scr) {
         temp_block.set_Cur_pos(i, data[RC+i*2+1]-'0', data[RC+i*2+2]-'0');
 
     p.set_Enemy_Block(temp_block);
-
     p.set_enemy_hold(data[RC+9]-'0');
     
     int sum = 0;
@@ -182,6 +227,28 @@ void Convert(char * buf) {
 
     buf[BUF_SIZE-1] = '9'; 
     buf[BUF_SIZE] = 0;
+}
+
+void Win(RenderWindow& scr, int sock) {
+    std::cout << "VICTORY\n\n";
+    p.print_result();
+    scr.close();
+    char * temp = new char[BUF_SIZE];
+    Convert(temp);
+    temp[BUF_SIZE-1] = 'z';
+    int len = write(sock, temp, BUF_SIZE);
+    pthread_exit(NULL);
+}
+
+void Lose(RenderWindow& scr, int sock) {
+    char * temp = new char[BUF_SIZE];
+    Convert(temp);
+    temp[BUF_SIZE-1] = 'z';
+    int len = write(sock, temp, BUF_SIZE);
+    std::cout << "DEFEAT\n\n";     
+    p.print_result();
+    scr.close();
+    pthread_exit(NULL);
 }
 
 void visual_Multi(RenderWindow &  scr, player & p){
@@ -220,7 +287,23 @@ void visual_Multi(RenderWindow &  scr, player & p){
     frame_enemy.setPosition(0, 0) ;
     frame_enemy.move(334, 0) ;
     scr.draw(frame_enemy) ;
-  }
+}
+
+void init(player &_p, RenderWindow & scr) {
+    Texture s, r; 
+    s.loadFromFile("./img/start.png");
+    r.loadFromFile("./img/ready.png");
+    
+    Sprite start(s), ready(r);
+    _p = player();
+    
+    scr.draw(ready);
+    scr.display();
+    sleep(1);
+    scr.draw(start);
+    scr.display();
+    sleep(1);
+}
 
 
 

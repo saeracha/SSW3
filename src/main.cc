@@ -81,7 +81,8 @@ int main(){
     else if (cur == SINGLE) {
         player p;
         Tetris(p) ;
+        std::cout << "GAME OVER\n\n";
+        p.print_result();
     }
-
     return 0 ;
 }

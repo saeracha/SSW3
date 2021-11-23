@@ -37,9 +37,10 @@ void ColoringBlock_Multi(RenderWindow & scr, Sprite & block, player & p) {
         print_block(scr, block, p.get_Cur_Block().get_TYPE(), Cur_pos.x, Cur_pos.y, 28, 31) ;      
     }
 
+    if(p.get_Cur_Enemy_Block().get_TYPE() == 0) return;
     for(size_t i=0 ; i<4 ; i++){
         Point Cur_pos = (p.get_Cur_Enemy_Block()).get_Cur_pos(i);
-        print_block(scr, block, p.get_Cur_Block().get_TYPE(), Cur_pos.x+18, Cur_pos.y, 28, 31) ;          
+        print_block(scr, block, p.get_Cur_Enemy_Block().get_TYPE(), Cur_pos.x+18, Cur_pos.y, 28, 31) ;          
     }
 }
 

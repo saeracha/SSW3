@@ -38,6 +38,7 @@ void Block::MOVE(int move){
 
 void Block::move_up() {
     for(size_t i = 0; i<4; i++) {
+        if(Cur_pos[i].y < 1) break;
             Cur_pos[i].y--;    
     }
 }

@@ -36,6 +36,9 @@ void player::set_enemy_hold(int n) { enemy_hold = n; }
 int player::get_enemy_score() { return enemy_score; }
 void player::set_enemy_score(int n) { enemy_score = n; }
 
+bool player::get_win() { return win; }
+void player::set_win(bool r) { win = r; }
+
 void player::set_enemy_board(int y, int x, int value) {
     enemy_board[y][x] = value;
 }
@@ -80,6 +83,10 @@ void player::space_block(float & delay){
     delay= 0.001 ;
 }
 
+void player::down_block(float & delay){
+    delay = 0.03 ;
+}
+
 void player::check_rotate(){
 
     Block rotated_Block = Cur_Block ; rotated_Block.ROTATE() ;
@@ -116,7 +123,27 @@ char player::line_clear(){
     }
 
     //k == -1 means no clear
-    if(k == 3) score += 30;
+    int btb = 0;
+    if(k == 3) {
+        if(tetris) { 
+            score += 45;
+            btb = 1;
+        }
+    
+        else 
+            score += 30;
+   
+        tetris = true;
+    }
+
+    if(k != -1) {
+        clear += k+1;
+        if(k == 3) {
+            tetris = true;
+            sum_tetris++;
+        }
+        else tetris = false;
+    }
     if(k == 2) score += 10;
 
     if(k != -1){
@@ -127,10 +154,11 @@ char player::line_clear(){
 
     if(k==-1) combo = 0;
     else combo++;
-    
+    max_com = max_com > combo ? max_com : combo;
+
     score += ((combo-1)/2)*5;
     
-    if(k == 3) return 'd'+(int)(combo/2.5);
+    if(k == 3) return 'd'+(int)(combo/2.5)+btb;
     else if(k == 2) return 'b'+(int)(combo/2.5);
     return 'a'+(int)(combo/2.5);
 }
@@ -168,16 +196,7 @@ void player::hold_action() {
     }
 }
 
-void player::attacked(int num) {
-
-    for(int i=0 ; i<num ; i++){
-        for(int j=0 ; j<COL ; j++){
-            if(board[i][j]) {
-                //gameover
-            }
-        }
-    }
-        
+void player::attacked(int num) {  
     int k ;
 
     for(k=0 ; k<num ; k++){
@@ -197,33 +216,26 @@ void player::attacked(int num) {
         for(int l=k ; l<num ; l++){        
             for(int i = num-l; i<ROW-l; i++) {
                 for(int j = 0; j<COL; j++) {
+                    if(i<1) break;
                     board[i-1][j] = board[i][j];
+                    Cur_Block.move_up();
                 }
             }
         }
     }
    
     makeline(num);
-   /* 
-    int low_y=ROW;
-    for(int i = 0; i<4; i++) {
-        low_y = low_y < Cur_Block.get_Cur_pos(i).y ? low_Y : Cur_Block.get_Cur_pos(i).y;
-    }
-
-    for(int i = 0; i<4; i++) {
-        do() {
-        int cur_y = Cur_Block.get_Cur_pos(i).y;
-        
-        if(cur_y < 0)break;
-        Cur_Block.move_up();
-
-        }while(board[cur_y][cur_x]);
-    }*/
 }
 
 void player::makeline(int num) {
     int r = rand()%COL;
 
+    for(int t = 0; t <num; t++) {
+        for(int i = 0; i<4; i++) {
+            if(Cur_Block.get_Cur_pos(i).y >= ROW-num)
+                Cur_Block.move_up();
+        }
+    }
 
     for(int i = ROW-1; i>= ROW-num; i--) {
         for(int j = 0; j<COL; j++) {
@@ -231,7 +243,16 @@ void player::makeline(int num) {
                 board[i][j] = 0; 
                 continue;
             }
-            board[i][j] = 1;
+            board[i][j] = 8;
         }
     }
+}
+
+void player::print_result() {
+    using namespace std;
+
+    std::cout << "Total score : " << score*10 << std::endl;
+    std::cout << "The number of line cleared : " << clear << std::endl;
+    std::cout << "The number of Tetris : " << sum_tetris << std::endl;
+    std::cout << "Maximum combo : " << max_com << std::endl;
 }
