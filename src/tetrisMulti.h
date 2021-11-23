@@ -22,5 +22,6 @@ void visual_Multi(RenderWindow & scr, player & p) ;
 void Convert(char * buf);
 void Win(RenderWindow & scr, int sock);
 void Lose(RenderWindow & scr, int sock);
+void init(player & p, RenderWindow & scr);
 
 #endif

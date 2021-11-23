@@ -13,6 +13,7 @@ class player {
 		int combo;
         int max_com;
         int sum_tetris;
+        int clear;
 		bool tetris;
         bool win;
         int move;
@@ -28,12 +29,12 @@ class player {
         Block Cur_Enemy_Block;
 
 	public:
-        player() : score(0), combo(0), max_com(0), sum_tetris(0), tetris(false), win(false), move(0), rotate(false), hold(-1), hold_use(false) {
+        player() : score(0), combo(0), max_com(0), sum_tetris(0), clear(0), tetris(false), win(false), move(0), rotate(false), hold(-1), hold_use(false) {
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
             std::fill(&board[0][0], &board[ROW-1][COL], 0);
             generate_next_block();
             generate_new_Block();
-            Cur_Enemy_Block = Block();
+            Cur_Enemy_Block = Block(-1);
         }
 
         void operator=(player rhs) {

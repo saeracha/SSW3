@@ -133,7 +133,8 @@ char player::line_clear(){
     }
 
     if(k != -1) {
-    if(k == 3) {
+        clear += k+1;
+        if(k == 3) {
             tetris = true;
             sum_tetris++;
         }
@@ -247,6 +248,7 @@ void player::print_result() {
     using namespace std;
 
     std::cout << "Total score : " << score*10 << std::endl;
+    std::cout << "The number of line cleared : " << clear << std::endl;
     std::cout << "The number of Tetris : " << sum_tetris << std::endl;
     std::cout << "Maximum combo : " << max_com << std::endl;
 }

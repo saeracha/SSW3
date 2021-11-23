@@ -14,7 +14,7 @@ static float timer=0 ;
 static float delay = 0.3 ;
 static float delays[9] = {1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2} ;
 static int cnt=0 ;
-
+static int pass = 0;
 player p;
 static pthread_mutex_t mutex;
 
@@ -53,6 +53,12 @@ void * Tetris(void * arg){
     RenderWindow * scr = multiarg->scr;
     char att = 'a';
 
+    //send and 
+    char * temp = new char[BUF_SIZE];
+    Convert(temp);
+    temp[BUF_SIZE-1] = 'x';
+    int len = write(sock, temp, BUF_SIZE);
+
 	while((*scr).isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
 		game_clock.restart() ;
@@ -77,7 +83,18 @@ void * Tetris(void * arg){
                 }
             }
         }
-        
+    
+        if(pass>0) {
+            if(pass == 1) {
+                char * temp = new char[BUF_SIZE];
+                Convert(temp);
+                temp[BUF_SIZE-1] = 'w';
+                int len = write(sock, temp, BUF_SIZE);
+            }
+            pass = -1;
+            init(p, *scr);
+        }
+
         if(p.get_win()) {
             Win(*scr, sock);
         }
@@ -150,6 +167,12 @@ void * ReadEnemy(void * arg) {
             p.set_win(true);
             pthread_exit(NULL);
         }
+        else if(data[BUF_SIZE-1] == 'x') {
+            pass = 1;
+        }
+        else if(data[BUF_SIZE-1] == 'w') {
+            pass = 2;
+        }
         draw(data, *scr);
     }
     
@@ -158,7 +181,7 @@ void * ReadEnemy(void * arg) {
 
 
 void draw(char * data, RenderWindow & scr) {
-
+    if(pass >= 0) return;
     for(size_t i=0 ; i<ROW ; i++)
         for(size_t j=0 ; j<COL ; j++)
                 p.set_enemy_board(i, j, data[i*COL+j]-'0');
@@ -170,7 +193,6 @@ void draw(char * data, RenderWindow & scr) {
         temp_block.set_Cur_pos(i, data[RC+i*2+1]-'0', data[RC+i*2+2]-'0');
 
     p.set_Enemy_Block(temp_block);
-
     p.set_enemy_hold(data[RC+9]-'0');
     
     int sum = 0;
@@ -263,7 +285,23 @@ void visual_Multi(RenderWindow &  scr, player & p){
     frame_enemy.setPosition(0, 0) ;
     frame_enemy.move(334, 0) ;
     scr.draw(frame_enemy) ;
-  }
+}
+
+void init(player &_p, RenderWindow & scr) {
+    Texture s, r; 
+    s.loadFromFile("./img/start.png");
+    r.loadFromFile("./img/ready.png");
+    
+    Sprite start(s), ready(r);
+    _p = player();
+    
+    scr.draw(ready);
+    scr.display();
+    sleep(1);
+    scr.draw(start);
+    scr.display();
+    sleep(1);
+}
 
 
 
