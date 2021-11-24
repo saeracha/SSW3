@@ -73,7 +73,7 @@ void Tetris(player &p){
 
 void visual(RenderWindow & scr, player & p){
     Texture t1, t2, t3 ;
-    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb ;
+    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb , ttm;
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
 	t3.loadFromFile("./img/frame.png") ;
@@ -88,16 +88,17 @@ void visual(RenderWindow & scr, player & p){
     tt8.loadFromFile("./img/eight.png") ;
     tt9.loadFromFile("./img/nine.png") ;
     ttb.loadFromFile("./img/blank.png") ;
+    ttm.loadFromFile("./img/margin.png") ;
 
 	Sprite block(t1), background(t2), frame(t3) ;
-    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb);   
+    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb), margin(ttm);   
     scr.clear(Color::White) ;
     scr.draw(background) ;
     ColoringBoard(scr, block, p);
     ColoringBlock(scr, block, p);
     ColoringNextBlock(scr, block, p);
     ColoringHoldBlock(scr, block, p); 
-    ColoringScoreBoard(scr, blank, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+    ColoringScoreBoard(scr, blank, zero, one, two, three, four, five, six, seven, eight, nine, margin, p) ;
     scr.draw(frame) ;
 }
 

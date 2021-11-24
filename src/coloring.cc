@@ -11,14 +11,14 @@ void ColoringBoard(RenderWindow & scr, Sprite & block, player & p) {
     }
 }
 
-void ColoringBoard_Multi(RenderWindow & scr, Sprite & block, player & p){
+void ColoringBoard_Multi(RenderWindow & scr, Sprite & block, Sprite & block_enemy, player & p){
      for(size_t i=0 ; i<ROW ; i++){
         for(size_t j=0 ; j<COL ; j++){
             if(p.get_board(i, j)){
                 print_block(scr, block, p.get_board(i,j), j, i, 28, 31) ;
             }
             if(p.get_enemy_board(i, j)){
-                print_block(scr, block, p.get_enemy_board(i,j), j+18, i, 28, 31) ;
+                print_block(scr, block_enemy, p.get_enemy_board(i,j), j+18, i, 28, 31) ;
             }
         }
     }  
@@ -31,7 +31,7 @@ void ColoringBlock(RenderWindow & scr, Sprite & block, player & p) {
     }
 }
 
-void ColoringBlock_Multi(RenderWindow & scr, Sprite & block, player & p) {
+void ColoringBlock_Multi(RenderWindow & scr, Sprite & block, Sprite & block_enemy, player & p) {
     for(size_t i=0 ; i<4 ; i++){
         Point Cur_pos = (p.get_Cur_Block()).get_Cur_pos(i);
         print_block(scr, block, p.get_Cur_Block().get_TYPE(), Cur_pos.x, Cur_pos.y, 28, 31) ;      
@@ -40,7 +40,7 @@ void ColoringBlock_Multi(RenderWindow & scr, Sprite & block, player & p) {
     if(p.get_Cur_Enemy_Block().get_TYPE() == 0) return;
     for(size_t i=0 ; i<4 ; i++){
         Point Cur_pos = (p.get_Cur_Enemy_Block()).get_Cur_pos(i);
-        print_block(scr, block, p.get_Cur_Enemy_Block().get_TYPE(), Cur_pos.x+18, Cur_pos.y, 28, 31) ;          
+        print_block(scr, block_enemy, p.get_Cur_Enemy_Block().get_TYPE(), Cur_pos.x+18, Cur_pos.y, 28, 31) ;          
     }
 }
 
@@ -55,7 +55,7 @@ void ColoringNextBlock(RenderWindow & scr, Sprite & block, player & p) {
     }
 }
 
-void ColoringEnemyScoreBoard(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine,player & p){
+void ColoringEnemyScoreBoard(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, Sprite & margin, player & p){
 
     int score = p.get_enemy_score() ;
     std::vector <int> score_num ;
@@ -69,12 +69,12 @@ void ColoringEnemyScoreBoard(RenderWindow & scr, Sprite & zero, Sprite & one, Sp
         digit ++ ;
     }
     for(size_t i=0 ; i<=digit ; i++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(i), i, digit, 362, 410) ;   
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, margin, score_num.at(i), i, digit, 362, 410) ;   
     }
    
 }
 
-void ColoringScoreBoard(RenderWindow & scr, Sprite & blank, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, player &p){
+void ColoringScoreBoard(RenderWindow & scr, Sprite & blank, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, Sprite & margin, player &p){
     for(int i=0 ; i<10 ; i++){
          blank.setTextureRect(IntRect(0,0,24,36)) ; blank.setPosition(24*i, 0) ; blank.move(28, 410) ; scr.draw(blank) ;
     }
@@ -89,7 +89,7 @@ void ColoringScoreBoard(RenderWindow & scr, Sprite & blank, Sprite & zero, Sprit
         score_digit ++ ;
     }
     for(size_t j=0 ; j<=score_digit ; j++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, score_num.at(j), j, score_digit, 28, 410) ;   
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, margin, score_num.at(j), j, score_digit, 28, 410) ;   
     }
     int combo = p.get_combo() ;
     std::vector <int> combo_num ; int com_digit=0 ;
@@ -104,7 +104,7 @@ void ColoringScoreBoard(RenderWindow & scr, Sprite & blank, Sprite & zero, Sprit
         }
     }
     for(size_t k=0 ; k<com_digit ; k++){
-        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, combo_num.at(k), k, com_digit, 220, 410) ;
+        print_number(scr, zero, one, two, three, four, five, six, seven, eight, nine, margin, combo_num.at(k), k, com_digit, 220, 410) ;
     }
 
 }
@@ -135,27 +135,28 @@ void print_block(RenderWindow & scr, Sprite & block, int block_type, int pos1, i
     scr.draw(block) ;
 }
 
-void print_number(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, int k, int i, int digit, int off1, int off2){
+void print_number(RenderWindow & scr, Sprite & zero, Sprite & one, Sprite & two, Sprite & three, Sprite & four, Sprite & five, Sprite & six, Sprite & seven, Sprite & eight, Sprite & nine, Sprite & margin, int k, int i, int digit, int off1, int off2){
         if(k== 0){
-            zero.setTextureRect(IntRect(0,0,24,36)) ; zero.setPosition(24*(digit-i), 0) ; zero.move(off1, off2) ; scr.draw(zero) ;
+            zero.setTextureRect(IntRect(0,0,24,36)) ; zero.setPosition(30*(digit-i), 0) ; zero.move(off1, off2) ; scr.draw(zero) ;
         }else if(k == 1){
-            one.setTextureRect(IntRect(0,0,24,36)) ; one.setPosition(24*(digit-i),0) ; one.move(off1, off2) ; scr.draw(one) ;
+            one.setTextureRect(IntRect(0,0,24,36)) ; one.setPosition(30*(digit-i),0) ; one.move(off1, off2) ; scr.draw(one) ;
         }else if(k == 2){
-            two.setTextureRect(IntRect(0,0,24,36)) ; two.setPosition(24*(digit-i),0) ; two.move(off1, off2) ; scr.draw(two) ;
+            two.setTextureRect(IntRect(0,0,24,36)) ; two.setPosition(30*(digit-i),0) ; two.move(off1, off2) ; scr.draw(two) ;
         }else if(k == 3){
-            three.setTextureRect(IntRect(0,0,24,36)) ; three.setPosition(24*(digit-i),0) ; three.move(off1, off2); scr.draw(three) ;
+            three.setTextureRect(IntRect(0,0,24,36)) ; three.setPosition(30*(digit-i),0) ; three.move(off1, off2); scr.draw(three) ;
         }else if(k == 4){
-            four.setTextureRect(IntRect(0,0,24,36)) ; four.setPosition(24*(digit-i),0) ; four.move(off1, off2); scr.draw(four) ;
+            four.setTextureRect(IntRect(0,0,24,36)) ; four.setPosition(30*(digit-i),0) ; four.move(off1, off2); scr.draw(four) ;
         }else if(k == 5){
-            five.setTextureRect(IntRect(0,0,24,36)) ; five.setPosition(24*(digit-i),0) ; five.move(off1, off2) ; scr.draw(five) ;
+            five.setTextureRect(IntRect(0,0,24,36)) ; five.setPosition(30*(digit-i),0) ; five.move(off1, off2) ; scr.draw(five) ;
         }else if(k == 6){
-            six.setTextureRect(IntRect(0,0,24,36)) ; six.setPosition(24*(digit-i),0) ; six.move(off1, off2); scr.draw(six) ;
+            six.setTextureRect(IntRect(0,0,24,36)) ; six.setPosition(30*(digit-i),0) ; six.move(off1, off2); scr.draw(six) ;
         }else if(k == 7){
-            seven.setTextureRect(IntRect(0,0,24,36)) ; seven.setPosition(24*(digit-i),0) ; seven.move(off1, off2); scr.draw(seven) ;
+            seven.setTextureRect(IntRect(0,0,24,36)) ; seven.setPosition(30*(digit-i),0) ; seven.move(off1, off2); scr.draw(seven) ;
         }else if(k == 8){
-            eight.setTextureRect(IntRect(0,0,24,36)) ; eight.setPosition(24*(digit-i),0) ; eight.move(off1, off2) ; scr.draw(eight) ;
+            eight.setTextureRect(IntRect(0,0,24,36)) ; eight.setPosition(30*(digit-i),0) ; eight.move(off1, off2) ; scr.draw(eight) ;
         }else if(k == 9){
-            nine.setTextureRect(IntRect(0,0,24,36)) ; nine.setPosition(24*(digit-i),0) ; nine.move(off1, off2); scr.draw(nine) ;     
+            nine.setTextureRect(IntRect(0,0,24,36)) ; nine.setPosition(30*(digit-i),0) ; nine.move(off1, off2); scr.draw(nine) ;     
         }
+        margin.setTextureRect(IntRect(0,0,6,36)) ; margin.setPosition(30*(digit-i),0) ; margin.move(off1+24, off2) ; scr.draw(margin) ;
 }
 

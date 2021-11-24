@@ -71,6 +71,7 @@ void * Tetris(void * arg){
             }
             
             if(e.type == Event::KeyPressed){
+                usleep(100) ;
                 if(e.key.code == Keyboard::Up) p.set_rotate(true) ;
                 else if(e.key.code == Keyboard::Left) p.set_move(-1);
                 else if(e.key.code == Keyboard::Right) p.set_move(1); 
@@ -252,12 +253,13 @@ void Lose(RenderWindow& scr, int sock) {
 }
 
 void visual_Multi(RenderWindow &  scr, player & p){
-    Texture t1, t2, t3, t4 ;
-    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb ;
+    Texture t1, t2, t3, t4 , t5;
+    Texture tt0, tt1, tt2, tt3, tt4, tt5, tt6, tt7, tt8, tt9, ttb , ttm;
 	t1.loadFromFile("./img/tiles.png") ;
 	t2.loadFromFile("./img/background.png") ;
 	t3.loadFromFile("./img/frame.png") ;
     t4.loadFromFile("./img/frame_enemy.png") ;
+    t5.loadFromFile("./img/tiles_enemy.png") ;
     tt0.loadFromFile("./img/zero.png") ;
     tt1.loadFromFile("./img/one.png") ;
     tt2.loadFromFile("./img/two.png") ;
@@ -269,17 +271,18 @@ void visual_Multi(RenderWindow &  scr, player & p){
     tt8.loadFromFile("./img/eight.png") ;
     tt9.loadFromFile("./img/nine.png") ;
     ttb.loadFromFile("./img/blank.png") ;
+    ttm.loadFromFile("./img/margin.png") ;
 
-	Sprite block(t1), background(t2), frame(t3), frame_enemy(t4) ;
-    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb);   
+	Sprite block(t1), background(t2), frame(t3), frame_enemy(t4), block_enemy(t5) ;
+    Sprite one(tt1), two(tt2), three(tt3), four(tt4), five(tt5), six(tt6), seven(tt7), eight(tt8), nine(tt9), zero(tt0), blank(ttb), margin(ttm);   
     scr.clear(Color::White) ;
     scr.draw(background) ;
-    ColoringBoard_Multi(scr, block, p);
-    ColoringBlock_Multi(scr, block, p); 
+    ColoringBoard_Multi(scr, block, block_enemy,  p);
+    ColoringBlock_Multi(scr, block, block_enemy, p); 
     ColoringNextBlock(scr, block, p);
     ColoringHoldBlock(scr, block, p); 
-    ColoringScoreBoard(scr, blank, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
-    ColoringEnemyScoreBoard(scr, zero, one, two, three, four, five, six, seven, eight, nine, p) ;
+    ColoringScoreBoard(scr, blank, zero, one, two, three, four, five, six, seven, eight, nine, margin, p) ;
+    ColoringEnemyScoreBoard(scr, zero, one, two, three, four, five, six, seven, eight, nine, margin, p) ;
 
 
     scr.draw(frame) ;
