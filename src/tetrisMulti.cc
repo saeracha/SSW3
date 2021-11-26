@@ -132,7 +132,14 @@ void * Tetris(void * arg){
         } 
         p.set_move(0);
         p.set_rotate(false);
-        delay = delays[cnt/10];
+        delay = 1 - 0.05*(int)(cnt/10) ;
+        if(cnt <100){
+            delay = 1 - 0.05*(int)(cnt/10) ;
+        }else if(cnt>=100 && cnt <300){
+            delay = 0.5 - 0.02*(int)((cnt-100)/10) ;
+        }else{
+            delay = 0.1 ;
+        }
        
         char * temp = new char[BUF_SIZE];
         Convert(temp);
@@ -299,7 +306,7 @@ void init(player &_p, RenderWindow & scr) {
     
     Sprite start(s), ready(r);
     _p = player();
-    
+    cnt = 0 ; 
     scr.draw(ready);
     scr.display();
     sleep(1);

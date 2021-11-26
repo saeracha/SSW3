@@ -32,11 +32,11 @@ int main()
 
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family=AF_INET; 
-	serv_adr.sin_addr.s_addr=htonl(INADDR_ANY);
+	serv_adr.sin_addr.s_addr=inet_addr(WELL_KNOWN_IP) ; //htonl(INADDR_ANY);
 	serv_adr.sin_port=htons(WELL_KNOWN_PORT);
 	
 	if(bind(serv_sock, (struct sockaddr*) &serv_adr, sizeof(serv_adr))==-1)
-		Error("BIND ERROR!!\n wait a minute.\n");
+		Error("BIND ERROR!!\n wait a minute.\n check out WELL_KNOWN_IP and WELL_KNOWN_PORT\n DEFINED IN tetrisMulti.h");
 	if(listen(serv_sock, 2)==-1)
 		Error("LISTEN ERROR!!");
 
@@ -52,10 +52,10 @@ int main()
 	
 		pthread_create(&t_id, NULL, Handle, (void*)&clnt_sock);
 		pthread_detach(t_id);
-        std::cout << "Connected client IP: " << inet_ntoa(clnt_adr.sin_addr) << std::endl;
-	}
-	close(serv_sock);
+        std::cout << "Connected client\n" ;
+        close(serv_sock);
 	return 0;
+}
 }
 	
 void * Handle(void * arg)

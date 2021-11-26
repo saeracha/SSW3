@@ -71,7 +71,7 @@ int main(){
 	    serv_addr.sin_port=htons(WELL_KNOWN_PORT);
 
 	    if(connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))==-1) {
-            std::cout << "CONNECT FAILED!!\n 1)You must open server to play multimode!\n 2)Check WELL_KNOWN_IP and WELL_KNOWN_PORT defined in tetrisMulti.h\n ";
+            std::cout << "CONNECT FAILED!!\n You must open server to play multimode!\n";
 	    	exit(1);//server is not open;
         }
         TetrisBattle(sock);    
