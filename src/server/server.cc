@@ -32,11 +32,11 @@ int main()
 
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family=AF_INET; 
-	serv_adr.sin_addr.s_addr=inet_addr(WELL_KNOWN_IP) ; //htonl(INADDR_ANY);
+	serv_adr.sin_addr.s_addr=inet_addr(WELL_KNOWN_IP);
 	serv_adr.sin_port=htons(WELL_KNOWN_PORT);
 	
 	if(bind(serv_sock, (struct sockaddr*) &serv_adr, sizeof(serv_adr))==-1)
-		Error("BIND ERROR!!\n wait a minute.\n check out WELL_KNOWN_IP and WELL_KNOWN_PORT\n DEFINED IN tetrisMulti.h");
+		Error("BIND ERROR!!\n check out WELL_KNOWN_IP and WELL_KNOWN_PORT\n DEFINED IN tetrisMulti.h");
 	if(listen(serv_sock, 2)==-1)
 		Error("LISTEN ERROR!!");
 
@@ -52,17 +52,22 @@ int main()
 	
 		pthread_create(&t_id, NULL, Handle, (void*)&clnt_sock);
 		pthread_detach(t_id);
-        std::cout << "Connected client\n" ;
-        close(serv_sock);
+        std::cout << "Client connected\n" ;
+    }
+    close(serv_sock);
 	return 0;
 }
-}
+
 	
 void * Handle(void * arg)
 {
     int clnt_sock = *((int*)arg);
     char data[BUF_SIZE];
     int len;
+
+    if(clnt_cnt == 2) {
+        std::cout << "Player found :: Game Start!\n";
+    }
 
 	while((len=read(clnt_sock, data, sizeof(data)))!=0) {
         pthread_mutex_lock(&mu);
@@ -89,6 +94,8 @@ void * Handle(void * arg)
 
 	close(clnt_sock);
     std::cout << "Client is disconnected\n";
+    if(clnt_cnt == 0)
+        std::cout << "Game Over\n";
 	return NULL;
 }
 
@@ -97,6 +104,14 @@ void SendData(int clnt_sock, char * data, int len)
 	pthread_mutex_lock(&m);
 	for(size_t i=0; i<clnt_cnt; i++) {
 	    if(clnt_sock == clnt_socks[i]) continue;
+        if(data[BUF_SIZE-1] >='b' && data[BUF_SIZE-1] <= 'o') {
+            if(i == 0) {
+                std::cout << "Player 1 attacks player 2 with " << data[BUF_SIZE-1]-'a' << " lines\n";
+            }
+            else {
+                std::cout << "Player 2 attacks player 1 with " << data[BUF_SIZE-1]-'a' << " lines\n";
+            }
+        }
         write(clnt_socks[i], data, len);
     }
 	pthread_mutex_unlock(&m);

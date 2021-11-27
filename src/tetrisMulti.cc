@@ -111,7 +111,7 @@ void * Tetris(void * arg){
             if(p.check_move_down()) p.move_down() ;
             else {
                 p.fix_cur_block(); 
-                if(cnt < 89 ) cnt++ ; 
+                cnt++ ; 
                 p.set_hold_use(false);
 
                 pthread_mutex_lock(&mutex);

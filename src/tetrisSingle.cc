@@ -46,7 +46,7 @@ void Tetris(player &p){
             else {
                 p.fix_cur_block();
                 p.generate_new_Block() ; 
-                if(cnt < 89 ) cnt++ ;
+                cnt++ ;
                 p.set_hold_use(false);
                 p.line_clear();
 
@@ -61,11 +61,16 @@ void Tetris(player &p){
                 }
             }
             timer = 0;
-        }
-        //p.line_clear() ;        
+        }     
         p.set_move(0);
         p.set_rotate(false);
-        delay = delays[cnt/10];
+        if(cnt <100){
+            delay = 1 - 0.05*(int)(cnt/10) ;
+        }else if(cnt>=100 && cnt <300){
+            delay = 0.5 - 0.02*(int)((cnt-100)/10) ;
+        }else{
+            delay = 0.1 ;
+        }
         visual(scr, p) ;
         scr.display();
     }
