@@ -16,6 +16,7 @@ void SendData(int sock_cli, char * msg, int len);
 void Error(const char * msg);
 
 int clnt_cnt=0;
+int n =0 ;
 int clnt_socks[MAX_CLNT];
 pthread_mutex_t m, mu;
 
@@ -43,11 +44,14 @@ int main()
     std::cout << "The server is open\n";
 	while(1)
 	{
+        if(clnt_cnt > 1) continue;
+
 		clnt_adr_sz=sizeof(clnt_adr);
 		clnt_sock=accept(serv_sock, (struct sockaddr*)&clnt_adr, (socklen_t *)&clnt_adr_sz);
 		
 		pthread_mutex_lock(&m);
-		clnt_socks[clnt_cnt++]=clnt_sock;
+		clnt_socks[clnt_cnt++%2]=clnt_sock;
+        n++;
 		pthread_mutex_unlock(&m);
 	
 		pthread_create(&t_id, NULL, Handle, (void*)&clnt_sock);
@@ -65,7 +69,7 @@ void * Handle(void * arg)
     char data[BUF_SIZE];
     int len;
 
-    if(clnt_cnt == 2) {
+    if(n%2 == 0) {
         std::cout << "Player found :: Game Start!\n";
     }
 
