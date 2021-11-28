@@ -170,6 +170,7 @@ void player::generate_new_Block(){
 }
 
 void player::generate_next_block() {
+    srand(time(0));
     while(next_block.size() < 11) {
         int n = rand()%7;
 

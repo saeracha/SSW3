@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
-#include <algorithm> 
+#include <algorithm>
+#include <time.h>
 #include <vector>
 #include <iostream>
 #include "block.h"
