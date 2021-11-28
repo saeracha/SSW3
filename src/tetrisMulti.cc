@@ -253,9 +253,13 @@ void Lose(RenderWindow& scr, int sock) {
     Convert(temp);
     temp[BUF_SIZE-1] = 'z';
     int len = write(sock, temp, BUF_SIZE);
-    std::cout << "DEFEAT\n\n";     
+    if(pass == 0)
+        std::cout << "GAME OVER\n\n";
+    else
+        std::cout << "DEFEAT\n\n";     
     p.print_result();
     scr.close();
+    if(pass == 0) exit(-1);
     pthread_exit(NULL);
 }
 

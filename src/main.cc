@@ -3,9 +3,8 @@
 #include "block.h"
 #include "tetrisSingle.h"
 #include "tetrisMulti.h"
-//
 #include <iostream>
-//
+#include <time.h>
 #include <cstring>
 #include <cstdlib>
 #include <arpa/inet.h>
@@ -18,6 +17,7 @@ using namespace sf;
 #define MULTI   1
 int main(){
     
+    srand(time(0));
     int sock;
     struct sockaddr_in serv_addr;
     bool out = false;

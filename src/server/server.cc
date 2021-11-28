@@ -94,6 +94,7 @@ void * Handle(void * arg)
 		}
 	}
 	clnt_cnt--;
+    n--;
 	pthread_mutex_unlock(&m);
 
 	close(clnt_sock);
