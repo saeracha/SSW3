@@ -11,7 +11,7 @@ int cnt=0 ;
 
 void Tetris(player &p){
     srand(time(0));
-    RenderWindow scr(VideoMode(320, 480), "Setup") ;
+    RenderWindow scr(VideoMode(320, 480), "Tetris Single!") ;
 	while(scr.isOpen()){
 		float time = game_clock.getElapsedTime().asSeconds() ;
 		game_clock.restart() ;

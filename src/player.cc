@@ -148,8 +148,10 @@ char player::line_clear(){
     if(k == 2) score += 10;
 
     if(k != -1){
-        for(size_t i=0 ; i<COL ; i++){
-            board[0][i] = 0 ;
+        for(size_t i = 0; i<k+1; i++) {
+            for(size_t j=0 ; j<COL ; j++){
+                board[i][j] = 0 ;
+            }
         }
     }
 
