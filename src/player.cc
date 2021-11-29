@@ -90,10 +90,11 @@ void player::down_block(float & delay){
 void player::check_rotate(){
 
     Block rotated_Block = Cur_Block ; rotated_Block.ROTATE() ;
-
+    
     if(rotated_Block.Preoccupied(board)) return  ;
     if(rotated_Block.Out_of_Range()) rotated_Block.MOVE(rotated_Block.Out_Left()-rotated_Block.Out_Right()) ;
     if(rotated_Block.Preoccupied(board)) return  ;
+    if(rotated_Block.Out_Bottom()) return ;
     Cur_Block = rotated_Block ;
     return ;  
 }
